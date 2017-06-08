@@ -51,7 +51,7 @@ var PageSchema = new Schema({
     trim: true,
     required: true
   },
-  home: {type:HomeSchema, default:HomeSchema},
+  home: {type:HomeSchema, default:[HomeSchema]},
   authors: {type:[AuthorSchema], default:[AuthorSchema, AuthorSchema]},
   research: {type:[ResearchSchema], default:[ResearchSchema]},
   publications: {type:[PublicationsSchema], default:[PublicationsSchema]},
