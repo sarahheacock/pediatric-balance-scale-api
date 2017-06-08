@@ -12,7 +12,8 @@ app.use(jsonParser());
 
 var mongoose = require("mongoose");
 
-mongoose.connect("mongodb://localhost:27017/qa");
+//mongoose.connect("mongodb://localhost:27017/qa");
+mongoose.connect("mongodb://heroku_mg7sd29d:c2ud50t63ipquvmogi23mrom1m@ds115712.mlab.com:15712/heroku_mg7sd29d");
 
 var db = mongoose.connection;
 
