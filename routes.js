@@ -28,6 +28,16 @@ router.param("section", function(req,res,next,id){
   next();
 });
 
+router.param("sectionID", function(req, res, next, id){
+  req.oneSection = req.section.id(id);
+  if(!req.oneSection){
+    var err = new Error("Not Found");
+    err.status = 404;
+    return next(err);
+  }
+  next();
+});
+
 router.param("username", function(req, res, next, id){
   //User.findById(id, function(err, doc){
   Page.findOne({username: id}).exec(function(err, doc){
@@ -54,7 +64,7 @@ router.param("password", function(req, res, next, id){
 });
 
 
-//===================GET, EDIT, AND DELETE SECTIONS IN PAGE[0]=================
+//===================GET SECTIONS AND AUTHENTICATE=================
 //authenticate user
 router.get("/admin/:username/:password", function(req, res){
 
@@ -62,14 +72,14 @@ router.get("/admin/:username/:password", function(req, res){
 });
 
 //create new page/user
-// router.post("/", function(req, res, next){
-//   var page = new Page(req.body);
-//   page.save(function(err, user){
-//     if(err) return next(err);
-//     res.status(201);
-//     res.json(user);
-//   });
-// });
+router.post("/", function(req, res, next){
+  var page = new Page(req.body);
+  page.save(function(err, user){
+    if(err) return next(err);
+    res.status(201);
+    res.json(user);
+  });
+});
 
 //get page
 router.get("/:pageID", function(req, res){
@@ -81,6 +91,39 @@ router.get("/:pageID/:section", function(req, res){
   res.json(req.section);
 });
 
+//======================EDIT SECTIONS==============================
+//add section
+router.post("/:pageID/:section", function(req, res, next){
+  req.section.push(req.body);
+  req.page.save(function(err, page){
+    if(err) return next(err);
+    res.status(201);
+    res.json(page);
+  });
+});
+
+router.get("/:pageID/:section/:sectionID", function(req, res){
+  res.json(req.oneSection);
+});
+
+//edit section
+router.put("/:pageID/:section/:sectionID", function(req, res){
+  Object.assign(req.oneSection, req.body);
+  req.page.save(function(err, result){
+    if(err) return next(err);
+    res.json(result);
+  });
+});
+
+//delete section
+router.delete("/:pageID/:section/:sectionID", function(req, res){
+  req.oneSection.remove(function(err){
+    req.page.save(function(err, page){
+      if(err) return next(err);
+      res.json(page);
+    })
+  })
+});
 
 
 module.exports = router;
