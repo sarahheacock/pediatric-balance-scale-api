@@ -58,7 +58,7 @@ router.param("password", function(req, res, next, id){
 //authenticate user
 router.get("/admin/:username/:password", function(req, res){
 
-  res.json({"admin":true, "id":{req.user._id}});
+  res.json({"admin":true, "id":{"id": req.user._id}});
 });
 
 //create new page/user
