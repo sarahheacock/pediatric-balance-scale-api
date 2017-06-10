@@ -72,16 +72,17 @@ var PageSchema = new Schema({
 // hash password before saving to database
 PageSchema.pre('save', function(next) {
   var page = this;
-  bcrypt.hash(page.password, 10, function(err, hash) {
-    if (err) {
-      return next(err);
-    }
-    page.password = hash;
+  // bcrypt.hash(page.password, 10, function(err, hash) {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  //   page.password = hash;
+
     if(page.authors !== undefined) page.authors.sort(sortAuthors);
     if(page.publications !== undefined) page.publications.sort(sortPublications);
     if(page.news !== undefined) page.news.sort(sortNews);
     next();
-  })
+  //})
 });
 
 var Page = mongoose.model("Page", PageSchema);

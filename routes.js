@@ -82,14 +82,14 @@ router.get("/admin/:username/:password", function(req, res){
 });
 
 //create new page/user
-// router.post("/", function(req, res, next){
-//   var page = new Page(req.body);
-//   page.save(function(err, user){
-//     if(err) return next(err);
-//     res.status(201);
-//     res.json(user);
-//   });
-// });
+router.post("/", function(req, res, next){
+  var page = new Page(req.body);
+  page.save(function(err, user){
+    if(err) return next(err);
+    res.status(201);
+    res.json(user);
+  });
+});
 
 //get page
 router.get("/:pageID", function(req, res){
