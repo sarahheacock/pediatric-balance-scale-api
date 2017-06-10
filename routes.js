@@ -72,6 +72,7 @@ router.get("/admin/:username/:password", function(req, res){
   var publications = req.user.publications.map((p) => (p._id));
   var news = req.user.publications.map((n) => (n._id));
   res.json({"admin":true, "id":{
+      "id":req.user._id,
       "home":home,
       "authors":authors,
       "publications":publications,
@@ -81,14 +82,14 @@ router.get("/admin/:username/:password", function(req, res){
 });
 
 //create new page/user
-router.post("/", function(req, res, next){
-  var page = new Page(req.body);
-  page.save(function(err, user){
-    if(err) return next(err);
-    res.status(201);
-    res.json(user);
-  });
-});
+// router.post("/", function(req, res, next){
+//   var page = new Page(req.body);
+//   page.save(function(err, user){
+//     if(err) return next(err);
+//     res.status(201);
+//     res.json(user);
+//   });
+// });
 
 //get page
 router.get("/:pageID", function(req, res){
@@ -107,7 +108,7 @@ router.post("/:pageID/:section", function(req, res, next){
   req.page.save(function(err, page){
     if(err) return next(err);
     res.status(201);
-    res.json(page);
+    res.json(page[req.params.section]);
   });
 });
 

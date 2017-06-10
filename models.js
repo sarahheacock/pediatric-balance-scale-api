@@ -4,6 +4,22 @@ var bcrypt = require('bcrypt');
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
+var sortAuthors = function(a, b){
+  //negative if a before b
+  //0 if unchanged order
+  //position if a after b
+  return b.name - a.name;
+};
+
+var sortPublications = function(a, b){
+  if(b.date === a.date) return a.title - b.title;
+  return b.date - a.date;
+};
+
+var sortNews = function(a, b){
+  if(b.date === a.date) return a.title - b.title;
+  return b.date - a.date;
+};
 
 var HomeSchema = new Schema({
   carousel: {type: Array, default: ["http://media1.britannica.com/eb-media/19/128619-004-9B4972E1.jpg",
@@ -12,10 +28,6 @@ var HomeSchema = new Schema({
   summary: {type: String, default:"Lomo distillery man bun put a bird on it asymmetrical, hoodie air plant authentic narwhal humblebrag food truck pickled edison bulb. Man bun lyft activated charcoal, vegan 90's sartorial stumptown live-edge DIY. Tousled etsy craft beer lumbersexual tacos, hoodie butcher art party readymade. Vice lumbersexual adaptogen vinyl ethical small batch. VHS chicharrones gluten-free, vinyl man bun yr pop-up lyft normcore master cleanse asymmetrical art party. Jean shorts narwhal live-edge, enamel pin meh synth street art brooklyn typewriter. Lo-fi mixtape banjo, lomo gochujang bicycle rights retro scenester butcher single-origin coffee la croix lumbersexual pour-over kombucha."},
 });
 
-// var ResearchSchema = new Schema({
-//   title: {type: String, default: "Title"},
-//   summary: {type: String, default: "Taxidermy vexillologist echo park, excepteur fashion axe fingerstache etsy est glossier franzen photo booth vape banh mi bushwick palo santo. Fingerstache veniam gluten-free meh keytar austin, next level irure fam. Vape forage fixie, hoodie knausgaard blog 90's neutra normcore cloud bread master cleanse retro craft beer pok pok. Schlitz blog edison bulb mollit bicycle rights mustache asymmetrical green juice 8-bit. Literally pop-up cupidatat craft beer. Readymade you probably haven't heard of them adaptogen kale chips green juice lomo. Gastropub cornhole tumblr, swag irony art party ugh duis blue bottle farm-to-table yr."},
-// });
 
 var AuthorSchema = new Schema({
   image: {type: String, default: "http://www.belmont.edu/pt/images/headshots/DarrMedium2.jpg"},
@@ -53,7 +65,6 @@ var PageSchema = new Schema({
   },
   home: {type:[HomeSchema], default:[HomeSchema]},
   authors: {type:[AuthorSchema], default:[AuthorSchema, AuthorSchema]},
-  //research: {type:[ResearchSchema], default:[ResearchSchema]},
   publications: {type:[PublicationsSchema], default:[PublicationsSchema]},
   news: {type:[NewsSchema], default:[NewsSchema]}
 });
@@ -66,6 +77,9 @@ PageSchema.pre('save', function(next) {
       return next(err);
     }
     page.password = hash;
+    if(page.authors !== undefined) page.authors.sort(sortAuthors);
+    if(page.publications !== undefined) page.publications.sort(sortPublications);
+    if(page.news !== undefined) page.news.sort(sortNews);
     next();
   })
 });
