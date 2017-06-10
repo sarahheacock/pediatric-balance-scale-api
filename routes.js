@@ -67,8 +67,17 @@ router.param("password", function(req, res, next, id){
 //===================GET SECTIONS AND AUTHENTICATE=================
 //authenticate user
 router.get("/admin/:username/:password", function(req, res){
-
-  res.json({"admin":true, "id":{"id": req.user._id}});
+  var home = req.user.home.map((h) => (h._id));
+  var authors = req.user.authors.map((a) => (a._id));
+  var publications = req.user.publications.map((p) => (p._id));
+  var news = req.user.publications.map((n) => (n._id));
+  res.json({"admin":true, "id":{
+      "home":home,
+      "authors":authors,
+      "publications":publications,
+      "news": news
+    }
+  });
 });
 
 //create new page/user
@@ -111,7 +120,7 @@ router.put("/:pageID/:section/:sectionID", function(req, res){
   Object.assign(req.oneSection, req.body);
   req.page.save(function(err, result){
     if(err) return next(err);
-    res.json(result);
+    res.json(result[req.params.section]);
   });
 });
 
@@ -120,7 +129,7 @@ router.delete("/:pageID/:section/:sectionID", function(req, res){
   req.oneSection.remove(function(err){
     req.page.save(function(err, page){
       if(err) return next(err);
-      res.json(page);
+      res.json(page[req.params.section]);
     })
   })
 });
