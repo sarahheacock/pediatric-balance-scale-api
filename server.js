@@ -22,8 +22,7 @@ var adminRoutes = require("./routes/adminRoutes");
 //var bcrypt = require('bcrypt');
 
 //=====CONFIGURATION=============================
-var mongoUri = process.env.MONGOLAB_URI || 'mongodb://localhost/test'
-mongoose.connect(mongoUri); //connect to database
+mongoose.connect(config.database); //connect to database
 app.set('superSecret', config.secret); //set secret variable
 
 

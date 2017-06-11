@@ -8,6 +8,9 @@ var Page = require("../models").Page;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 
+var config = require('../config');
+
+
 userRoutes.param("pageID", function(req, res, next, id){
   Page.findById(id, function(err, doc){
     if(err) return next(err);
@@ -49,8 +52,8 @@ userRoutes.post("/sayHello", function(req, res) {
       port: 465,
       secure: true,
         auth: {
-            user: 'balanace.test@gmail.com', // Your email id
-            pass: 'GC9hXE6uQNJyMWJw' // Your password
+            user: config.user, // Your email id
+            pass: config.pass // Your password
         }
     });
 
