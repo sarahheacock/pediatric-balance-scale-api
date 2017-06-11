@@ -62,9 +62,9 @@ userRoutes.post("/sayHello", function(req, res) {
     var mailOptions = {
         from: '"Nancy Darr" <balanace.test@gmail.com>', // sender address
         to: config.to, // list of receivers
-        subject: 'Email Example', // Subject line
+        subject: 'Web Site Message', // Subject line
         //text: text //, // plaintext body
-        html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead
+        html: req.body.message // You can choose to send an HTML body instead
     };
 
     transporter.sendMail(mailOptions, function(error, info){
