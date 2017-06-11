@@ -8,7 +8,7 @@ var Page = require("../models").Page;
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 
-var config = require('../config');
+var config = require('../configure/config');
 
 
 userRoutes.param("pageID", function(req, res, next, id){
@@ -61,7 +61,7 @@ userRoutes.post("/sayHello", function(req, res) {
 
     var mailOptions = {
         from: '"Nancy Darr" <balanace.test@gmail.com>', // sender address
-        to: 'seheacock@bellsouth.net', // list of receivers
+        to: config.to, // list of receivers
         subject: 'Email Example', // Subject line
         //text: text //, // plaintext body
         html: '<b>Hello world ✔</b>' // You can choose to send an HTML body instead

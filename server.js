@@ -10,7 +10,7 @@ var jsonParser = require("body-parser").json;
 var logger = require("morgan");
 
 var mongoose = require("mongoose");
-var config = require('./config');
+var config = require('./configure/config');
 
 var router = express.Router();
 var Page = require("./models").Page;
