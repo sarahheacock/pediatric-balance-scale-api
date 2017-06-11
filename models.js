@@ -55,12 +55,12 @@ var NewsSchema = new Schema({
 var PageSchema = new Schema({
   username: {
     type: String,
+    unique: true,
     required: true,
     trim: true
   },
   password: {
     type: String,
-    trim: true,
     required: true
   },
   home: {type:[HomeSchema], default:[HomeSchema]},
@@ -69,21 +69,47 @@ var PageSchema = new Schema({
   news: {type:[NewsSchema], default:[NewsSchema]}
 });
 
+// authenticate input against database documents
+PageSchema.statics.authenticate = function(username, password, callback) {
+  Page.findOne({ username: username })
+      .exec(function (error, user) {
+        if (error) {
+          return callback(error);
+        } else if ( !user ) {
+          var err = new Error('User not found.');
+          err.status = 401;
+          return callback(err);
+        }
+        bcrypt.compare(password, user.password , function(error, result) {
+          if (result === true) {
+            return callback(null, user);
+          } else {
+            return callback();
+          }
+        })
+      });
+}
+
 // hash password before saving to database
 PageSchema.pre('save', function(next) {
   var page = this;
-  // bcrypt.hash(page.password, 10, function(err, hash) {
-  //   if (err) {
-  //     return next(err);
-  //   }
-  //   page.password = hash;
-
+  if(page.password.length <= 16){
+    bcrypt.hash(page.password, 10, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+      page.password = hash;
+      next();
+    })
+  }
+  else{
     if(page.authors !== undefined) page.authors.sort(sortAuthors);
     if(page.publications !== undefined) page.publications.sort(sortPublications);
     if(page.news !== undefined) page.news.sort(sortNews);
     next();
-  //})
+  }
 });
+
 
 var Page = mongoose.model("Page", PageSchema);
 module.exports.Page = Page;
